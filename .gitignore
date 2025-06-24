@@ -60,7 +60,6 @@ Thumbs.db
 # Results and intermediate files
 *.lemmo.csv
 *.lemma_report.csv
-*.xlsx
 *.csv
 
 # User files
@@ -68,4 +67,7 @@ Thumbs.db
 
 # Ignore mystem binary (user should add it manually)
 mystem.exe
-mystem 
+mystem
+
+# Игнорировать старую инструкцию
+1.pdf 

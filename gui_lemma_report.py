@@ -59,18 +59,19 @@ class LemmaReportGUI:
         self.progress_bar.pack_forget()
         self.status_label = ctk.CTkLabel(main_frame, text="Готов к работе", font=ctk.CTkFont(size=12), text_color="gray")
         self.status_label.pack(pady=10)
-        preview_frame = ctk.CTkFrame(main_frame)
-        preview_frame.pack(fill="both", expand=True, padx=20, pady=10)
-        preview_label = ctk.CTkLabel(preview_frame, text="Предварительный просмотр:", font=ctk.CTkFont(size=14, weight="bold"))
-        preview_label.pack(anchor="w", padx=20, pady=(20, 10))
-        self.preview_text = ctk.CTkTextbox(preview_frame, font=ctk.CTkFont(size=12), wrap="word")
-        self.preview_text.pack(fill="both", expand=True, padx=20, pady=(0, 20))
         info_frame = ctk.CTkFrame(main_frame)
         info_frame.pack(fill="x", padx=20, pady=10)
         info_label = ctk.CTkLabel(info_frame, text="ℹ️ Просто выберите CSV из Мастера Отчётов — всё остальное программа сделает сама!", font=ctk.CTkFont(size=12), text_color="gray")
         info_label.pack(pady=15)
-        preview_btn = ctk.CTkButton(main_frame, text="Предварительный просмотр результата", command=self.preview_output, height=40, font=ctk.CTkFont(size=14), fg_color="#2d7d32", hover_color="#1b5e20")
-        preview_btn.pack(padx=20, pady=(0, 10))
+        # ---
+        # Подпись с авторством и ссылкой на телеграм-канал в самом низу окна
+        author_frame = ctk.CTkFrame(self.root)
+        author_frame.pack(side="bottom", fill="x", pady=(0, 5))
+        author_label = ctk.CTkLabel(author_frame, text="Разработал Антон Рожков | ", font=ctk.CTkFont(size=12), text_color="gray")
+        author_label.pack(side="left", padx=(10,0))
+        tg_label = ctk.CTkLabel(author_frame, text="t.me/rozhkovmarketing", font=ctk.CTkFont(size=12, underline=True), text_color="#229ED9", cursor="hand2")
+        tg_label.pack(side="left")
+        tg_label.bind("<Button-1>", lambda e: self.open_telegram())
 
     def select_in_file(self):
         path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
@@ -191,22 +192,6 @@ class LemmaReportGUI:
         finally:
             self.root.after(0, self.reset_ui)
 
-    def preview_output(self):
-        if not self.out_path or not os.path.exists(self.out_path):
-            messagebox.showerror("Ошибка", "Сначала выполните обработку и дождитесь результата")
-            return
-        try:
-            with open(self.out_path, "r", encoding="utf-8") as f:
-                preview = ''.join([next(f) for _ in range(20)])
-            self.preview_text.delete("0.0", "end")
-            self.preview_text.insert("0.0", preview)
-            self.update_status("Предпросмотр загружен", 1.0)
-        except Exception as e:
-            self.update_status("Ошибка", 0)
-            messagebox.showerror("Ошибка", str(e))
-        finally:
-            self.root.after(0, self.reset_ui)
-
     def reset_ui(self):
         self.run_button.configure(state="normal")
         self.progress_bar.pack_forget()
@@ -214,6 +199,15 @@ class LemmaReportGUI:
 
     def run(self):
         self.root.mainloop()
+
+    def open_telegram(self):
+        import webbrowser
+        webbrowser.open_new_tab("https://t.me/rozhkovmarketing")
+
+# ---
+# Программу разработал Антон Рожков
+# Подписывайтесь на телеграм-канал о маркетинге и управлении командами:
+# https://t.me/rozhkovmarketing
 
 if __name__ == "__main__":
     app = LemmaReportGUI()
